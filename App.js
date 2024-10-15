@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, ScrollView, TextInput } from 'react-native';
 import Slider from '@react-native-community/slider';
 import { io } from 'socket.io-client';
 
-const socket = io('http://tu-servidor.com');
+const socket = io('http://localhost:3000/');
 
 const BackgroundPattern = () => (
   <View style={styles.patternContainer}>
