@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TextInput } from 'react-native';
 import Slider from '@react-native-community/slider';
 import { io } from 'socket.io-client';
 
@@ -33,13 +33,15 @@ export default function App() {
   }, []);
 
   const handleYoelChange = (value) => {
-    setYoelValue(value);
-    socket.emit('updateYoel', value);
+    const newValue = Math.min(Math.max(parseFloat(value) || 0, 0), 100);
+    setYoelValue(newValue);
+    socket.emit('updateYoel', newValue);
   };
 
   const handleLauraChange = (value) => {
-    setLauraValue(value);
-    socket.emit('updateLaura', value);
+    const newValue = Math.min(Math.max(parseFloat(value) || 0, 0), 100);
+    setLauraValue(newValue);
+    socket.emit('updateLaura', newValue);
   };
 
   const totalPercentage = yoelValue + lauraValue;
@@ -64,7 +66,13 @@ export default function App() {
               maximumTrackTintColor="#000000"
               thumbTintColor="#FF0000"
             />
-            <Text style={styles.percentage}>{yoelValue.toFixed(0)}%</Text>
+            <TextInput
+              style={styles.input}
+              value={yoelValue.toFixed(0)}
+              onChangeText={handleYoelChange}
+              keyboardType="numeric"
+            />
+            <Text style={styles.percentageSymbol}>%</Text>
           </View>
           <View style={styles.sliderContainer}>
             <Text style={styles.name}>Laura</Text>
@@ -78,7 +86,13 @@ export default function App() {
               maximumTrackTintColor="#000000"
               thumbTintColor="#FF0000"
             />
-            <Text style={styles.percentage}>{lauraValue.toFixed(0)}%</Text>
+            <TextInput
+              style={styles.input}
+              value={lauraValue.toFixed(0)}
+              onChangeText={handleLauraChange}
+              keyboardType="numeric"
+            />
+            <Text style={styles.percentageSymbol}>%</Text>
           </View>
           <View style={styles.summaryContainer}>
             <Text style={styles.summaryText}>Suma total: {totalPercentage.toFixed(0)}%</Text>
@@ -141,9 +155,16 @@ const styles = StyleSheet.create({
     flex: 1,
     height: 40,
   },
-  percentage: {
+  input: {
     width: 50,
-    textAlign: 'right',
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 5,
+    padding: 5,
+    textAlign: 'center',
+  },
+  percentageSymbol: {
+    marginLeft: 5,
   },
   summaryContainer: {
     marginTop: 20,
